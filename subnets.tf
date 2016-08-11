@@ -1,9 +1,9 @@
 resource "aws_subnet" "subnets" {
-  count                   = "${length(var.subnets_cidr)}"
+  count                   = "${length(var.cidrs)}"
   vpc_id                  = "${var.vpc_id}"
-  cidr_block              = "${var.subnets_cidr[count.index]}"
+  cidr_block              = "${var.cidrs[count.index]}"
   availability_zone       = "${element(var.availability_zones, count.index)}"
-  map_public_ip_on_launch = "${var.subnets_map_public_ip_on_launch}"
+  map_public_ip_on_launch = "${var.map_public_ip_on_launch}"
 
   tags {
     # Tagging policy requests ${element(var.availability_zones, count.index)} be converted into "EW/1A" style
@@ -19,7 +19,7 @@ resource "aws_subnet" "subnets" {
 }
 
 resource "aws_route_table_association" "route_table_associations" {
-  count          = "${length(var.subnets_cidr)}"
+  count          = "${length(var.cidrs)}"
   subnet_id      = "${element(aws_subnet.subnets.*.id, count.index)}"
-  route_table_id = "${element(var.route_tables[count.index]}"
+  route_table_id = "${element(var.route_tables[count.index])}"
 }
